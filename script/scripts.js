@@ -27,7 +27,6 @@ function setEventListeners() {
   //     document.getElementById("lupa").src = "images/lupa.svg";
   //   });
   // }
-
 }
 
 function preventDefaultForm(formId) {
@@ -38,6 +37,11 @@ function preventDefaultForm(formId) {
 function changeToDayTheme() {
   const theme = document.getElementById("stylesheet");
   const [logo] = document.getElementsByClassName("logo");
+
+  // flechita del menu
+  // lupa de la busqueda
+  // camara
+  // recording imagen
 
   theme.href = "style/sailor-day.css";
   logo.src = "images/gifOF_logo.png";
@@ -106,7 +110,7 @@ async function getRandomGifs() {
   const url = `https://api.giphy.com/v1/gifs/random?api_key=${api_key}&tag=&rating=G`;
   const searchResults = await fetch(url);
   const { data: gifs } = await searchResults.json();
-  
+
   displayRandomResults(gifs);
 }
 
@@ -144,7 +148,7 @@ function displayRandomResults(gifs) {
   titleContainer.appendChild(closeButton);
   container.appendChild(titleContainer);
   container.appendChild(imageElement);
-  
+
   recomendedSectionElement.appendChild(container);
   container.appendChild(buttonLink);
 }
