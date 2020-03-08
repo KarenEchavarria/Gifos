@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" id="stylesheet" href="style/sailor-day.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Chakra+Petch:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>GifOS</title>
+  </head>
+
+  <body>
+    <header>
+      <h1 class="gradient-bar">
+        ¡Bienvenidos/as a Guifos.com ------ Dónde los gifs están. ////// Número
+        de visitas
+      </h1>
+      <nav>
+        <img class="logo" src="images/gifOF_logo.png" alt="logo" />
+        <ul>
+          <li><a href="crear-guifos.html">Crear Guifos</a></li>
+          <li class="submenu">
+            <div class="submenu1">
+              <a href="#">Elegir tema</a>
+              <span id="separator"></span>
+              <img src="images/dropdown.svg" alt="dropdown" />
+            </div>
+            <ul class="windows-style-box submenu2">
+              <li class="menu-no-style" id="day">Saylor Day</li>
+              <li class="menu-no-style" id="night">Saylor Night</li>
+            </ul>
+          </li>
+          <li class="menu-no-style"><a href="#">Mis Guifos</a></li>
+        </ul>
+      </nav>
+    </header>
+    <section>
+      <div class="windows-style-box">
+        <div class="gradient-bar">Buscar</div>
+        <form class="search-form" id="search-form">
+          <input
+            type="text"
+            name="search"
+            id="search"
+            placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
+          />
+          <button class="search-button">
+            <img id="lupa" src="images/lupa_inactive.svg" /> Buscar
+          </button>
+        </form>
+      </div>
+      <div class="display-results">
+        <div class="display-results-container"></div>
+      </div>
+    </section>
+    <section class= "recomended-section-grid" id="recomended-box">
+      <h2 class="box-rose-border">Hoy te sugerimos:</h2>
+    </section>
+    <section class= "trends-grid">
+      <h2 class="box-rose-border">Tendencias:</h2>
+    </section>
+    <script src="script/scripts.js"></script>
+    <script src="script/crear-guifos.js"></script>
+  </body>
+</html>

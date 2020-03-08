@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" id="stylesheet" href="style/sailor-day.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Chakra+Petch:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+    <title>GifOS</title>
+  </head>
+
+  <body>
+    <header>
+      <h1 class="gradient-bar">
+        ¡Bienvenidos/as a Guifos.com ------ Dónde los gifs están. ////// Número
+        de visitas
+      </h1>
+      <nav>
+        <img class="logo" src="images/gifOF_logo.png" alt="logo" />
+        <ul>
+          <li><a href="crear-guifos.html">Crear Guifos</a></li>
+          <li>
+            <a href="#">Elegir tema</a>
+            <ul class="menu2 windows-style-box">
+              <li class="menu-no-style" id="day">Saylor Day</li>
+              <li class="menu-no-style" id="night">Saylor Night</li>
+            </ul>
+          </li>
+          <li><img src="images/dropdown.svg" alt="dropdown" /></li>
+          <li class="menu-no-style"><a href="#">Mis Guifos</a></li>
+        </ul>
+      </nav>
+    </header>
+    <section class="pop-up-style">
+      <h2 class="gradient-bar">Crear Guifos</h2>
+      <div class="text-pop-up">
+        <h3>
+          <img src="images/window_img.png" alt="window-img" />Aquí podrás crear
+          tus propios guifos
+        </h3>
+        <p>
+          Crear tu <span class="bold-text">guifo</span> es muy fácil, graba
+          cualquier imagen con tu cámara y obtén guifos personalizados. Los
+          pasos para crear tu guifo son:
+        </p>
+        <p>
+          <span class="bold-text">1)</span> Dar permisos de acceso a la cámara
+          (sólo por el tiempo de uso)
+        </p>
+        <p><span class="bold-text">2)</span> Capturar tu momento guifo</p>
+        <p><span class="bold-text">3)</span> Revisar el momento</p>
+        <p><span class="bold-text">4)</span> Listo para subir y compartir!</p>
+        <p>
+          ¿Quieres comenzar a crear tu
+          <span class="bold-text">guifo</span> ahora?"
+        </p>
+      </div>
+        <form id="1st-window-button-conntainer" class="create-gifos-buttons-container">
+          <button id="cancel" class="general-button">Cancelar</button>
+          <button id="start" class="general-button">Comenzar</button>
+        </form>
+      
+    </section>
+    <section>
+      <h2 class="box-rose-border">Mis guifos:</h2>
+      <div class="mis-guifos"></div>
+    </section>
+    <script src="script/scripts.js"></script>
+    <script src="script/crear-guifos.js"></script>
+    
+  </body>
+</html>
