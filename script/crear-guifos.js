@@ -17,7 +17,7 @@
       document.location.href = "index.html";
     });
 
-    document.getElementById("start").addEventListener("click", event);
+    document.getElementById("start").addEventListener("click", event, { once: true });
   }
 
   function event() {
@@ -39,7 +39,6 @@
 
     const createGifButton1 = document.getElementById("start");
     createGifButton1.removeEventListener("click", event);
-    createGifButton1.id = "start-recording-button";
     createGifButton1.innerHTML = "Capturar";
 
     getVideoForGif();
@@ -71,35 +70,37 @@
     });
 
     recorder.stream = stream;
-    document
-      .getElementById("start-recording-button")
-      .addEventListener("click", startRecordingEvent);
+    const startRecordingButton = document.getElementById("start");
+    startRecordingButton.addEventListener("click", startRecordingEvent);
   }
 
   async function startRecordingEvent() {
-    const startRecordingButton = document.getElementById("start-recording-button");
+    const startRecordingButton = document.getElementById("start");
     startRecordingButton.removeEventListener("click", startRecordingEvent);
-    startRecordingButton.id = "stop-recording-button";
-    startRecordingButton.innerHTML = "Listo";
-
-    document
-      .getElementById("stop-recording-button")
-      .addEventListener("click", function stopRecordingEvent() {
-        stopRecording();
-      });
-
     await recorder.startRecording();
+    stopRecordingEvent();
+  }
+
+  function stopRecordingEvent() {
+    const stopRecordingButton = document.getElementById("start");
+    stopRecordingButton.innerHTML = "Listo";
+    stopRecordingButton.addEventListener("click", stopRecording);
   }
 
   async function stopRecording() {
     await recorder.stopRecording();
     video.srcObject = null;
     blob = await recorder.getBlob();
+
+    getGifFile(blob);
     console.log(blob);
     video.src = URL.createObjectURL(blob);
+    console.log(video.src);
     recorder.stream.getTracks()[0].stop();
 
-    // console.log(form)
+    const stoptRecordingButton = document.getElementById("start");
+    stoptRecordingButton.addEventListener("click", stopRecording);
+    stoptRecordingButton.innerHTML = "Subir Guifo";
 
     // reset recorder's state
     await recorder.reset();
@@ -112,6 +113,7 @@
   }
 
   function getGifFile(blob) {
+    document.getElementById("start").removeEventListener("click", stopRecording);
     form = new FormData();
     form.append("file", blob, "gif-1");
   }

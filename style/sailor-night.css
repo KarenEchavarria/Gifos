@@ -91,6 +91,7 @@ li {
   padding: 0.34% 8.42% 0.34% 8.42%;
   margin: 2% 0; 
   font-size: 3vw;
+  color: #ffffff;
 }
 
 .windows-style-box {
@@ -212,6 +213,7 @@ nav ul li:active {
   font-size: var(--big-font);
   color: #b4b4b4;
   line-height: 1.3rem;
+  background: #FFFFFF;
 }
 
 .search-form {
@@ -223,7 +225,8 @@ nav ul li:active {
   
 }
 
-.search-button {
+
+.disabled-search-button {
   width: 13vw;
   padding: 0.5% 1%;
   margin: 1.1% 1.3% 2% 0%;
@@ -235,12 +238,17 @@ nav ul li:active {
 }
 
 .search-button-input {
+  width: 13vw;
+  padding: 0.5% 1%;
+  margin: 1.1% 1.3% 2% 0%;
   background: #EE3EFE;
   border: var(--main-border);
   box-shadow: inset -1px -1px 0 0 #A72CB3, inset 1px 1px 0 0 #FFFFFF;
+  font-size: var(--big-font);
+  color: var(--tittle-text-color);
 }
 
-.search-button-active:active {
+.search-button-input:active {
   background: #CE36DB;
   border: var(--main-border);
   box-shadow: inset -1px -1px 0 0 #A72CB3, inset 1px 1px 0 0 #FFFFFF;
@@ -248,7 +256,11 @@ nav ul li:active {
   outline-offset: -0.3vw;
 }
 
-button.search-button img {
+button.search-button-disabled img {
+  margin-right: 4.2%;
+}
+
+button.search-button-active img {
   margin-right: 4.2%;
 }
 

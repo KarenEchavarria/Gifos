@@ -19,14 +19,14 @@
         de visitas
       </h1>
       <nav>
-        <img class="logo" src="images/gifOF_logo.png" alt="logo" />
+        <img id="logo" src="images/gifOF_logo.png" alt="logo" />
         <ul>
           <li><a href="crear-guifos.html">Crear Guifos</a></li>
           <li class="submenu">
             <div class="submenu1">
               <a href="#">Elegir tema</a>
               <span id="separator"></span>
-              <img src="images/dropdown.svg" alt="dropdown" />
+              <img id= "dropdown" src="images/dropdown.svg" alt="dropdown" />
             </div>
             <ul class="windows-style-box submenu2">
               <li class="menu-no-style" id="day">Saylor Day</li>
@@ -40,18 +40,24 @@
     <section>
       <div class="windows-style-box">
         <div class="gradient-bar">Buscar</div>
-        <form class="search-form" id="search-form">
+        <form class="search-form" id="search-form" autocomplete="off">
           <input
             type="text"
             name="search"
             id="search"
             placeholder="Busca gifs, hashtags, temas, busca lo que quieras…"
           />
-          <button class="search-button">
+          <button id="search-button" class="disabled-search-button" disabled="true">
             <img id="lupa" src="images/lupa_inactive.svg" /> Buscar
           </button>
         </form>
       </div>
+      <div id="search-suggestions">
+        <div id="serach-suggestion-1" class= "search-suggestion-options"></div>
+        <div id="serach-suggestion-2" class= "search-suggestion-options"></div>
+        <div id="serach-suggestion-3" class= "search-suggestion-options"></div>
+      </div>
+      <div id="local-storage-search-suggestions"></div>
       <div class="display-results">
         <div class="display-results-container"></div>
       </div>
