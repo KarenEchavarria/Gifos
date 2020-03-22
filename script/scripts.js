@@ -1,63 +1,17 @@
 const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
 const stylesheet = document.getElementById("stylesheet").src;
 
-setInicialThemeValueInLocalStorage();
 preventDefaultForm("search-form");
-getNRandomGifs(4);
+// getNRandomGifs(4);
 // getTrendingGifs();
 setEventListeners();
 
 function setEventListeners() {
-  const buttonDayTheme = document.getElementById("day");
-  const buttonNightTheme = document.getElementById("night");
-  const input = document.getElementById("search");
-  const form = document.getElementById("search-form");
-  // const searchButton = document.getElementById("search-button");
-
-  buttonDayTheme.addEventListener("click", changeToDayTheme);
-  buttonNightTheme.addEventListener("click", changeToNightTheme);
-  input.addEventListener("input", suggestionsKeyUp);
-  form.addEventListener("submit", lauchSearch);
+  document.getElementById("day").addEventListener("click", changeToDayTheme);
+  document.getElementById("night").addEventListener("click", changeToNightTheme);
+  document.getElementById("search").addEventListener("input", suggestionsKeyUp);
+  document.getElementById("search-form").addEventListener("submit", lauchSearch);
   suggestionsEventListener();
-}
-
-function setInicialThemeValueInLocalStorage() {
-  if (localStorage.getItem("theme")) {
-    getThemeFromLocalStorage();
-    return;
-  }
-
-  localStorage.setItem("theme", "");
-}
-
-function preventDefaultForm(formId) {
-  const form = document.getElementById(formId);
-  form.addEventListener("submit", event => event.preventDefault());
-}
-
-function changeToDayTheme() {
-  document.getElementById("stylesheet").href = "style/sailor-day.css";
-  changeThemeImagesSrc("logo", "images/gifOF_logo.png");
-  changeThemeImagesSrc("lupa", "images/lupa_inactive.svg");
-  changeThemeImagesSrc("dropdown", "images/dropdown.svg");
-
-  // camara
-  // recording imagen
-
-  localStorage.setItem("theme", "style/sailor-day.css");
-}
-
-function changeToNightTheme() {
-  document.getElementById("stylesheet").href = "style/sailor-night.css";
-  changeThemeImagesSrc("logo", "images/gifOF_logo_dark.png");
-  changeThemeImagesSrc("lupa", "images/combined-shape.svg");
-  changeThemeImagesSrc("dropdown", "images/forward.svg");
-
-  localStorage.setItem("theme", "style/sailor-night.css");
-}
-
-function changeThemeImagesSrc(elementId, newSrc) {
-  document.getElementById(elementId).src = newSrc;
 }
 
 function suggestionsKeyUp() {
@@ -121,24 +75,6 @@ function logkey() {
   searchSuggestion3.innerHTML = `${input} maravilloso`;
 }
 
-// function getThemeFromLocalStorage(actionNightTheme, actionDayTheme) {
-//   console.log(typeof actionNightTheme);
-//   actionNightTheme();
-//   if (localStorage.getItem("theme") === "style/sailor-night.css") {
-//     actionNightTheme();
-//   } else {
-//     actionDayTheme();
-//   }
-// }
-
-function getThemeFromLocalStorage() {
-  if (localStorage.getItem("theme") === "style/sailor-night.css") {
-    changeToNightTheme();
-  } else {
-    changeToDayTheme();
-  }
-}
-
 function activeSearch() {
   const input = document.getElementById("search").value;
   const inputLength = input.length;
@@ -147,20 +83,9 @@ function activeSearch() {
   if (inputLength != 0) {
     searchButton.removeAttribute("disabled", "true");
     searchButton.setAttribute("enabled", "true");
-    document.getElementById("lupa").src = "images/lupa.svg";
-    changeThemeImagesSrc("lupa", "images/combined-shape.svg");
+    toggleImgDependingThemes("lupa", "images/lupa.svg", "images/lupa_light.svg");
     searchButton.classList.replace("disabled-search-button", "search-button-input");
   }
-}
-
-function removeNode(parentClass, removableChildClass, action = "") {
-  const [containerElement] = document.getElementsByClassName(parentClass);
-
-  if (containerElement.hasChildNodes()) {
-    document.getElementsByClassName(removableChildClass)[0].remove();
-  }
-
-  action();
 }
 
 async function getGifsBySearch(suggestion = " ") {
@@ -182,8 +107,6 @@ function saveSerachInputInSessionStorage(searchInput) {
     const oldInputs = searchSessionStorage.split(",");
     oldInputs.push(searchInput);
     const newInputs = oldInputs.filter((value, index, array) => array.indexOf(value) === index);
-
-    console.log(newInputs);
 
     sessionStorage.setItem("search_input", newInputs);
 
@@ -301,6 +224,7 @@ function displayTrendingResults(gifs) {
   const imageElement = document.createElement("img");
   const trendsSectionElement = document.getElementsByClassName("trends-grid")[0];
 
+  container.classList.add("trends-container");
   caption.classList.add("gradient-bar", "trends-hashtag");
   imageElement.classList.add("trends-img");
 

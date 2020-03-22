@@ -17,7 +17,7 @@
     <header>
       <h1 class="gradient-bar">
         ¡Bienvenidos/as a Guifos.com ------ Dónde los gifs están. ////// Número
-        de visitas
+        de visitas: <span id="users-counter"></span>
       </h1>
       <nav>
         <img class="logo" src="images/gifOF_logo.png" alt="logo" />
@@ -36,7 +36,7 @@
       </nav>
     </header>
     <section class="pop-up-style">
-      <h2 class="gradient-bar">Crear Guifos</h2>
+      <h2 id="my-gifos-tittle" class="gradient-bar">Crear Guifos</h2>
       <div class="text-pop-up">
         <h3>
           <img src="images/window_img.png" alt="window-img" />Aquí podrás crear
@@ -60,17 +60,16 @@
         </p>
       </div>
         <form id="1st-window-button-conntainer" class="create-gifos-buttons-container">
-          <button id="cancel" class="general-button">Cancelar</button>
+          <button id="cancel" class="general-button"><span id="first-button-text"> Cancelar </span><img id="first-button-img" class="hidden" src="" alt=""></button>
           <button id="start" class="general-button">Comenzar</button>
         </form>
-      
+        <div id="timer" class="timer hidden">00:00:<span id="seconds">00</span> </div>
     </section>
     <section>
       <h2 class="box-rose-border">Mis guifos:</h2>
-      <div class="mis-guifos"></div>
+      <div class="mis-guifos trends-grid"></div>
     </section>
-    <script src="script/scripts.js"></script>
+    <script src="script/utils.js"></script>
     <script src="script/crear-guifos.js"></script>
-    
   </body>
 </html>
