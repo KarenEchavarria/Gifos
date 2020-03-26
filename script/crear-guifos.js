@@ -1,12 +1,17 @@
 (function createGifos() {
-  const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
+  // const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
+  const api_key = "gOD5XFTrM89dBlE4WuG3BoB28XPaz3jX";
   let video;
   let recorder;
   let blob;
+  let intervalId;
+  let timerId;
 
   setEventListeners();
+  setInicialThemeValueInLocalStorage();
   hiddenMenu();
   preventDefaultForm("1st-window-button-conntainer");
+  getMyGifsFromLocalStorage();
 
   function hiddenMenu() {
     const [menu] = document.getElementsByTagName("ul");
@@ -17,7 +22,7 @@
     document.getElementById("cancel").addEventListener("click", backToIndex);
 
     setStartRecordingButtonEventListeners("Comenzar", () => {
-      removeNode("pop-up-style", "text-pop-up", makeVideoContainer);
+      removeNode("first-pop-up-style", "text-pop-up", makeVideoContainer);
       document.getElementById("cancel").removeEventListener("click", backToIndex);
       event();
     });
@@ -28,11 +33,15 @@
   }
 
   function event() {
-    document.getElementById("my-gifos-tittle").innerText = "Un Chequeo Antes de Empezar";
+    document
+      .getElementById("create-gifos-container")
+      .classList.replace("first-pop-up-style", "pop-up-style");
+    document.getElementById("create-gifos-tittle").innerText = "Un Chequeo Antes de Empezar";
     document.getElementById("first-button-text").classList.add("hidden");
+    document.getElementById("create-guifos-close-button").classList.remove("hidden");
     document.getElementById("cancel").style.padding = "1.5% 2%";
     [...document.getElementsByClassName("general-button")].forEach(
-      item => (item.style.margin = "0")
+      item => (item.style.marginLeft = "0%")
     );
     toggleImgDependingThemes("first-button-img", "images/camera.svg", "images/camera_light.svg");
     document.getElementById("first-button-img").classList.remove("hidden");
@@ -46,20 +55,17 @@
 
   function makeVideoContainer() {
     const buttonsContainer = document.getElementById("1st-window-button-conntainer");
-
     const videoContainer = document.createElement("div");
     const video = document.createElement("video");
     const img = document.createElement("img");
 
     videoContainer.classList.add("windows-style-box-prompt");
-    videoContainer.style.margin = "1%";
     img.classList.add("hidden");
     img.id = "gif-preview";
 
     videoContainer.appendChild(video);
     videoContainer.appendChild(img);
     buttonsContainer.before(videoContainer);
-
     getVideoForGif();
   }
 
@@ -86,7 +92,7 @@
       recorder.stream = stream;
 
       setStartRecordingButtonEventListeners("Capturar", () => {
-        (document.getElementById("my-gifos-tittle").innerText = "Capturando Tu Guifo"),
+        (document.getElementById("create-gifos-tittle").innerText = "Capturando Tu Guifo"),
           [...document.getElementsByClassName("general-button")].forEach(item =>
             item.classList.add("general-button-active")
           );
@@ -103,7 +109,7 @@
   }
 
   function recordingToPreviewStyleChanges() {
-    document.getElementById("my-gifos-tittle").innerText = "Vista Previa";
+    document.getElementById("create-gifos-tittle").innerText = "Vista Previa";
     document.getElementById("first-button-text").classList.remove("hidden");
     document.getElementById("cancel").style.removeProperty("padding");
     document.getElementById("cancel").style.removeProperty("margin");
@@ -115,16 +121,21 @@
       document.querySelector("video").classList.add("hidden");
       document.getElementById("gif-preview").classList.remove("hidden");
     });
+
+    document
+      .getElementById("cancel")
+      .classList.replace("general-button", "general-button-secondary");
   }
 
   async function startRecordingEvent() {
     setTimer();
     await recorder.startRecording();
-    // setStartRecordingButtonEventListeners("Listo", () => {
-    //   clearTimer(timerId);
-    //   recordingToPreviewStyleChanges();
-    //   stopRecording();
-    // });
+
+    setStartRecordingButtonEventListeners("Listo", () => {
+      recordingToPreviewStyleChanges();
+      stopRecording();
+      stopTimer(timerId);
+    });
   }
 
   function setTimer() {
@@ -132,28 +143,29 @@
     const timerContainer = document.getElementById("seconds");
     let timer = 0;
 
-    const timerId = setInterval(function() {
+    timerId = setInterval(function() {
+      if (timer < 9){
       timer++;
+      timerContainer.innerHTML = `0${String(timer)}`;
+      } else {
+        timer++;
       timerContainer.innerHTML = String(timer);
+      }
     }, 1000);
-
-    stopTimer(timerId);
   }
 
-  function stopTimer(timerId) {
-    setStartRecordingButtonEventListeners("Listo", () => {
-      clearInterval(timerId);
-      clearTimeout(timeOutId);
-      recordingToPreviewStyleChanges();
-      stopRecording();
-    });
-
-    const timeOutId = setTimeout(() => {
-      clearInterval(timerId);
-      recordingToPreviewStyleChanges();
-      stopRecording();
-    }, 32000);
+  function stopTimer() {
+    clearInterval(timerId);
+    clearTimeout(timeOutId);
+    document.getElementById("create-guifos-close-button").classList.add("hidden");
   }
+
+  const timeOutId = setTimeout(() => {
+    clearInterval(timerId);
+    recordingToPreviewStyleChanges();
+    document.getElementById("create-guifos-close-button").classList.add("hidden");
+    stopRecording();
+  }, 24000);
 
   async function stopRecording() {
     await recorder.stopRecording();
@@ -171,17 +183,45 @@
     // so that we can record again
     recorder = null;
 
-    setStartRecordingButtonEventListeners("Subir Guifo", () => {
-      uploadVideo(blob);
-      removeNode("pop-up-style", "windows-style-box-prompt", createUploadingView);
-      document.getElementById("cancel").classList.add("hidden");
-    });
+    document.getElementById("forward-arrow").classList.remove("hidden");
+    makeLoadingBar("forward-arrow", 17, "first-loading-bar-container");
+    addFunctionalityToProgressBar(17, 200);
+
+    setStartRecordingButtonEventListeners("Subir Guifo", setStyleChangesForUploadingView);
 
     document.getElementById("first-button-text").innerHTML = "Repetir Captura";
-    document.getElementById("cancel").addEventListener("click", () => {
-      removeNode("pop-up-style", "windows-style-box-prompt", makeVideoContainer);
-      event();
-    });
+    document.getElementById("cancel").addEventListener(
+      "click",
+      () => {
+        removeNode("pop-up-style", "windows-style-box-prompt", makeVideoContainer);
+        document
+          .getElementById("cancel")
+          .classList.replace("general-button-secondary", "general-button");
+        event();
+        document
+          .getElementById("start")
+          .removeEventListener("click", setStyleChangesForUploadingView);
+        stopTimer(timerId);
+        document.getElementById("timer").classList.add("hidden");
+        document.getElementById("forward-arrow").classList.add("hidden");
+        removeNode("pop-up-style", "first-loading-bar-container", console.log);
+      },
+      { once: true }
+    );
+  }
+
+  function setStyleChangesForUploadingView() {
+    clearInterval(intervalId);
+    document.getElementById("timer").classList.add("hidden");
+    document.getElementById("forward-arrow").classList.add("hidden");
+    removeNode("pop-up-style", "first-loading-bar-container", console.log);
+    uploadVideo(blob);
+    removeNode("pop-up-style", "windows-style-box-prompt", createUploadingView);
+    document.getElementById("cancel").classList.add("hidden");
+    document.getElementById("create-guifos-close-button").classList.remove("hidden");
+    document
+      .getElementById("start")
+      .classList.replace("general-button", "general-button-secondary");
   }
 
   function createUploadingView() {
@@ -191,8 +231,30 @@
     const image = document.createElement("img");
     const p1 = document.createElement("p");
     const p2 = document.createElement("p");
+
+    container.classList.add("windows-style-upload-prompt");
+    contentContainer.classList.add("uploading-container");
+    image.src = "images/globe_img.png";
+    p1.classList.add("upload-p");
+    p2.classList.add("upload-p");
+    p1.id = "p1";
+    p1.innerHTML = "Estamos subiendo tu guifo…";
+    p2.innerHTML = "Tiempo restante: algunos minutos";
+
+    container.appendChild(contentContainer);
+    contentContainer.appendChild(image);
+    contentContainer.appendChild(p1);
+    contentContainer.appendChild(p2);
+    buttonsContainer.before(container);
+
+    makeLoadingBar("p1", 23, "loading-bar-container");
+    addFunctionalityToProgressBar(23, 500);
+  }
+
+  function makeLoadingBar(appendedId, quantity, containerClass) {
+    const buttonsContainer = document.getElementById(appendedId);
     const loadingBar = document.createElement("div");
-    const spanElementQuantity = 23;
+    const spanElementQuantity = quantity;
 
     for (let index = 1; index <= spanElementQuantity; index++) {
       const bar = document.createElement("span");
@@ -201,38 +263,43 @@
       loadingBar.appendChild(bar);
     }
 
-    container.classList.add("windows-style-upload-prompt");
-    contentContainer.classList.add("uploading-container");
-    image.src = "images/globe_img.png";
-    p1.classList.add("upload-p");
-    p2.classList.add("upload-p");
-    p1.innerHTML = "Estamos subiendo tu guifo…";
-    p2.innerHTML = "Tiempo restante: algunos minutos";
-    loadingBar.classList.add("loading-bar-container");
+    loadingBar.classList.add(containerClass);
 
-    container.appendChild(contentContainer);
-    contentContainer.appendChild(image);
-    contentContainer.appendChild(p1);
-    contentContainer.appendChild(loadingBar);
-    contentContainer.appendChild(p2);
-    buttonsContainer.before(container);
+    buttonsContainer.after(loadingBar);
+  }
+
+  function addFunctionalityToProgressBar(spanElementQuantity, miliseconds) {
+    let counter = 0;
+    intervalId = setInterval(() => {
+      counter++;
+
+      const bar = document.getElementById(`loading${counter}`);
+      bar.classList.toggle("loading-bar-pink");
+      if (counter === spanElementQuantity) {
+        const pinkBars = document.querySelectorAll("span.loading-bar-pink");
+        pinkBars.forEach(element => element.classList.replace("loading-bar-pink", "loading-bar"));
+        counter = 0;
+      }
+    }, miliseconds);
   }
 
   async function uploadVideo(blob) {
-    let abort = false;
+    let controller = new AbortController();
     const form = new FormData();
     form.append("file", blob, "guifo.gif");
 
     setStartRecordingButtonEventListeners("Cancelar", () => {
-      abort = true;
-      backToIndex();
+      controller.abort();
+      clearInterval(intervalId);
+      document.location.href = "crear-guifos.html";
     });
 
     try {
       const url = `https://upload.giphy.com/v1/gifs?api_key=${api_key}`;
       const gifPost = fetch(url, {
         method: "POST",
-        body: form
+        body: form,
+        signal: controller.signal
       });
 
       const {
@@ -240,46 +307,97 @@
       } = await (await gifPost).json();
       const newGifUrl = `https://media.giphy.com/media/${gifId}/giphy.gif`;
 
-      console.log("antes del return");
-
-      if (abort) return;
-
-      console.log("despues del return");
-
+      clearInterval(intervalId);
       setNewGifInLocalStorage(newGifUrl);
     } catch (err) {
       console.log(err);
     }
+  }
 
-    function setNewGifInLocalStorage(newGifUrl) {
-      if (sessionStorage.getItem("myGifs")) {
-        const gifsSessionStorage = sessionStorage.getItem("myGifs");
-        const myGifs = gifsSessionStorage.split(",");
-        myGifs.unshift(newGifUrl);
+  function setNewGifInLocalStorage(newGifUrl) {
+    if (localStorage.getItem("myGifs")) {
+      const gifsLocalStorage = localStorage.getItem("myGifs");
+      const myGifs = gifsLocalStorage.split(",");
+      myGifs.unshift(newGifUrl);
 
-        sessionStorage.setItem("myGifs", myGifs);
+      localStorage.setItem("myGifs", myGifs);
 
-        newInputs.forEach(value => {
-          createMyGif(myGifs);
+      removeNode("pop-up-style", "windows-style-upload-prompt", createShareView(myGifs));
+      document
+        .getElementById("create-gifos-container")
+        .classList.replace("pop-up-style", "first-pop-up-style");
+      document
+        .getElementById("start")
+        .classList.replace("general-button-secondary", "general-button");
+      setStartRecordingButtonEventListeners("Listo", () => {
+        backToIndex();
+      });
+      myGifs.forEach(value => {
+        createMyGif(value);
+      });
+
+      return;
+    }
+
+    localStorage.setItem("myGifs", newGifUrl);
+    removeNode("pop-up-style", "windows-style-upload-prompt", createShareView(newGifUrl));
+    document
+      .getElementById("create-gifos-container")
+      .classList.replace("pop-up-style", "first-pop-up-style");
+    createMyGif(newGifUrl);
+  }
+
+  function createShareView(newGifUrl) {
+    const buttonsContainer = document.getElementById("1st-window-button-conntainer");
+    const contentContainer = document.createElement("div");
+    const buttonContainer = document.createElement("div");
+    const image = document.createElement("img");
+    const h3 = document.createElement("h3");
+    const button1 = document.createElement("button");
+    const button2 = document.createElement("button");
+
+    contentContainer.classList.add("window-share-view");
+    buttonContainer.classList.add("create-gifos-seconday-buttons-container");
+    buttonContainer.style.flexDirection = "column";
+    image.id = "gif-ready";
+    image.src = newGifUrl;
+    button1.classList.add("general-button-secondary");
+    button2.classList.add("general-button-secondary");
+    button1.innerHTML = "Copiar Enlace Guifo";
+    button2.innerHTML = "Descargar Guifo";
+    h3.innerHTML = "Guifo creado con éxito";
+
+    contentContainer.appendChild(image);
+    contentContainer.appendChild(buttonContainer);
+    buttonContainer.appendChild(h3);
+    buttonContainer.appendChild(button1);
+    buttonContainer.appendChild(button2);
+    buttonsContainer.before(contentContainer);
+
+    setShareButtonsEventListeners(newGifUrl);
+  }
+
+  function setShareButtonsEventListeners(newGifUrl) {
+    const button1 = document.getElementsByClassName("general-button-secondary")[0];
+    const button2 = document.getElementsByClassName("general-button-secondary")[1];
+    const span = document.createElement("span");
+    button1.appendChild(span);
+
+    button1.addEventListener("click", () => {
+      navigator.clipboard
+        .writeText(newGifUrl)
+        .then(() => {
+          span.classList.add("tooltip-copy-text");
+          span.innerHTML = "Enlace Copiado!";
+          setTimeout(() => {
+            span.style.visibility = "hidden";
+          }, 1500);
+        })
+        .catch(err => {
+          console.log("Something went wrong", err);
         });
+    });
 
-        return;
-      }
-
-      sessionStorage.setItem("search_input", newGifUrl);
-      createMyGif(newGifUrl);
-    }
-
-    function createMyGif(value) {
-      const container = document.createElement("figure");
-      const imageElement = document.createElement("img");
-
-      imageElement.classList.add("trends-img");
-
-      imageElement.src = value;
-
-      container.appendChild(imageElement);
-      document.getElementsByClassName("mis-guifos")[0].appendChild(container);
-    }
+    button2.addEventListener("click", () => {});
   }
 })();

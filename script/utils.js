@@ -1,3 +1,10 @@
+setListeners();
+
+function setListeners() {
+  document.getElementById("day").addEventListener("click", changeToDayTheme);
+  document.getElementById("night").addEventListener("click", changeToNightTheme);
+}
+
 window.onload = () => {
   if (localStorage.getItem("visitors_counter")) {
     const oldVisits = localStorage.getItem("visitors_counter");
@@ -19,7 +26,7 @@ function preventDefaultForm(formId) {
   form.addEventListener("submit", event => event.preventDefault());
 }
 
-function removeNode(parentClass, removableChildClass, action = "") {
+function removeNode(parentClass, removableChildClass, action = console.log) {
   const [containerElement] = document.getElementsByClassName(parentClass);
 
   if (containerElement.hasChildNodes()) {
@@ -48,37 +55,59 @@ function getThemeFromLocalStorage() {
 
 function changeToDayTheme() {
   document.getElementById("stylesheet").href = "style/sailor-day.css";
-//   changeThemeImagesSrc("logo", "images/gifOF_logo.png");
-//   changeThemeImagesSrc("lupa", "images/lupa_inactive.svg");
-//   changeThemeImagesSrc("dropdown", "images/dropdown.svg");
+  changeThemeImagesSrc("logo", "images/gifOF_logo.png");
+  changeThemeImagesSrc("dropdown", "images/dropdown.svg");
 
-  // camara
-  // recording imagen
+  if (document.getElementById("lupa")) {
+    changeThemeImagesSrc("lupa", "images/lupa_inactive.svg");
+  }
 
   localStorage.setItem("theme", "style/sailor-day.css");
 }
 
 function changeToNightTheme() {
   document.getElementById("stylesheet").href = "style/sailor-night.css";
-//   changeThemeImagesSrc("logo", "images/gifOF_logo_dark.png");
-//   changeThemeImagesSrc("lupa", "images/combined-shape.svg");
-//   changeThemeImagesSrc("dropdown", "images/forward.svg");
+  changeThemeImagesSrc("logo", "images/gifOF_logo_dark.png");
+  changeThemeImagesSrc("dropdown", "images/forward.svg");
+
+  if (document.getElementById("lupa")) {
+    changeThemeImagesSrc("lupa", "images/combined-shape.svg");
+  }
 
   localStorage.setItem("theme", "style/sailor-night.css");
 }
 
 function toggleImgDependingThemes(imgId, imgDay, imgNight) {
-    const theme = localStorage.getItem("theme");
-    const img = document.getElementById(imgId);
+  const theme = localStorage.getItem("theme");
+  const img = document.getElementById(imgId);
 
-    if (theme === "style/sailor-day.css") {
-      img.src = imgDay;
-    } else {
-      img.src = imgNight;
-    }
+  if (theme === "style/sailor-day.css") {
+    img.src = imgDay;
+  } else {
+    img.src = imgNight;
+  }
 }
 
+function createMyGif(value) {
+  const container = document.createElement("figure");
+  const imageElement = document.createElement("img");
 
-// function changeThemeImagesSrc(elementId, newSrc) {
-//   document.getElementById(elementId).src = newSrc;
-// }
+  imageElement.classList.add("trends-img");
+
+  imageElement.src = value;
+
+  container.appendChild(imageElement);
+  document.getElementsByClassName("mis-guifos")[0].appendChild(container);
+}
+
+function changeThemeImagesSrc(elementId, newSrc) {
+  document.getElementById(elementId).src = newSrc;
+}
+
+function getMyGifsFromLocalStorage() {
+  const gifsLocalStorage = localStorage.getItem("myGifs");
+  const myGifs = gifsLocalStorage.split(",");
+  myGifs.forEach(value => {
+      createMyGif(value);
+  });
+  }

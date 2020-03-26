@@ -1,23 +1,24 @@
-const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
+// const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
+const api_key = "gOD5XFTrM89dBlE4WuG3BoB28XPaz3jX";
 const stylesheet = document.getElementById("stylesheet").src;
 
 preventDefaultForm("search-form");
-// getNRandomGifs(4);
-// getTrendingGifs();
+getNRandomGifs(4);
+getTrendingGifs();
 setEventListeners();
 
 function setEventListeners() {
-  document.getElementById("day").addEventListener("click", changeToDayTheme);
-  document.getElementById("night").addEventListener("click", changeToNightTheme);
   document.getElementById("search").addEventListener("input", suggestionsKeyUp);
-  document.getElementById("search-form").addEventListener("submit", lauchSearch);
+  document.getElementById("search-form").addEventListener("submit", () => {
+    lauchSearch(); document.getElementById("search-form").reset(); activeSearch();
+  });
   suggestionsEventListener();
 }
 
 function suggestionsKeyUp() {
-  activeSearch();
   event.preventDefault;
   logkey();
+  activeSearch();
   document.getElementById("search").removeEventListener("keyup", suggestionsKeyUp);
 }
 
@@ -81,10 +82,16 @@ function activeSearch() {
   const searchButton = document.getElementById("search-button");
 
   if (inputLength != 0) {
-    searchButton.removeAttribute("disabled", "true");
-    searchButton.setAttribute("enabled", "true");
+    searchButton.removeAttribute("disabled", "");
+    searchButton.setAttribute("enabled", "");
     toggleImgDependingThemes("lupa", "images/lupa.svg", "images/lupa_light.svg");
     searchButton.classList.replace("disabled-search-button", "search-button-input");
+  } else {
+    searchButton.removeAttribute("enabled", "");
+    searchButton.setAttribute("disabled", "");
+    toggleImgDependingThemes("lupa", "images/lupa_inactive.svg", "images/combined-shape.svg");
+    searchButton.classList.replace("search-button-input", "disabled-search-button");
+    document.getElementById("search-suggestions").style.display = "none";
   }
 }
 
@@ -95,7 +102,7 @@ async function getGifsBySearch(suggestion = " ") {
   const searchResults = await fetch(url);
   const { data: gifs } = await searchResults.json();
 
-  saveSerachInputInSessionStorage(searchInput);
+  saveSerachInputInSessionStorage(`${searchInput} ${suggestion}`);
   makeSearchedResultsContainer(searchInput, suggestion);
 
   gifs.forEach(displaySearchedResults);
@@ -105,11 +112,14 @@ function saveSerachInputInSessionStorage(searchInput) {
   if (sessionStorage.getItem("search_input")) {
     const searchSessionStorage = sessionStorage.getItem("search_input");
     const oldInputs = searchSessionStorage.split(",");
-    oldInputs.push(searchInput);
-    const newInputs = oldInputs.filter((value, index, array) => array.indexOf(value) === index);
+    const oldInputsSet = new Set(oldInputs);
+    oldInputsSet.add(searchInput);
+
+    const newInputs = [...oldInputsSet];
 
     sessionStorage.setItem("search_input", newInputs);
 
+    removePreviousQuickSearchButtons();
     newInputs.forEach(value => {
       createQuickSearchButton(value);
     });
@@ -120,8 +130,25 @@ function saveSerachInputInSessionStorage(searchInput) {
   sessionStorage.setItem("search_input", searchInput);
 }
 
+function removePreviousQuickSearchButtons() {
+  removeNode(
+    "session-storage-search-container-suggestions",
+    "session-storage-search-suggestions",
+    makeQuickSearchButtonsContainer
+  );
+}
+
+function makeQuickSearchButtonsContainer() {
+  const buttonContainer = document.createElement("div");
+  buttonContainer.classList.add("session-storage-search-suggestions");
+  const [containerB] = document.getElementsByClassName(
+    "session-storage-search-container-suggestions"
+  );
+  containerB.appendChild(buttonContainer);
+}
+
 function createQuickSearchButton(value) {
-  const container = document.getElementById("local-storage-search-suggestions");
+  const [container] = document.getElementsByClassName("session-storage-search-suggestions");
   const buttonElement = document.createElement("button");
 
   buttonElement.classList.add("general-blue-button", "quick-search-button");
@@ -162,12 +189,16 @@ async function getRandomGifs() {}
 async function getNRandomGifs(quantity) {
   let counter = 0;
   do {
-    const url = `https://api.giphy.com/v1/gifs/random?api_key=${api_key}&tag=&rating=G`;
-    const searchResults = await fetch(url);
-    const { data: gifs } = await searchResults.json();
-    displayRandomResults(gifs);
+    try {
+      const url = `https://api.giphy.com/v1/gifs/random?api_key=${api_key}&tag=&rating=G`;
+      const searchResults = await fetch(url);
+      const { data: gifs } = await searchResults.json();
+      displayRandomResults(gifs);
 
-    counter = counter + 1;
+      counter = counter + 1;
+    } catch (err) {
+      console.log(err);
+    }
   } while (counter < quantity);
 }
 
