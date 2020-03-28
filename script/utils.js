@@ -108,6 +108,6 @@ function getMyGifsFromLocalStorage() {
   const gifsLocalStorage = localStorage.getItem("myGifs");
   const myGifs = gifsLocalStorage.split(",");
   myGifs.forEach(value => {
-      createMyGif(value);
+    createMyGif(value);
   });
-  }
+}

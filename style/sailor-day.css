@@ -236,7 +236,6 @@ nav ul li:active {
   display: -ms-flexbox;
   display: -moz-box;
   flex-wrap: nowrap;
-  
 }
 
 .disabled-search-button {
@@ -533,6 +532,7 @@ h3 > img {
   flex-direction: row;
   justify-content: flex-end;
   padding: 0 3.5% 3.5% 0;
+  bottom: -1vw;
 }
 
 .create-gifos-seconday-buttons-container {

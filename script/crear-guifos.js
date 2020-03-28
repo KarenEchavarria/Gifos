@@ -1,5 +1,4 @@
 (function createGifos() {
-  // const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
   const api_key = "gOD5XFTrM89dBlE4WuG3BoB28XPaz3jX";
   let video;
   let recorder;

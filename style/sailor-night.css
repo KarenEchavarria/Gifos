@@ -236,7 +236,6 @@ nav ul li:active {
   display: -ms-flexbox;
   display: -moz-box;
   flex-wrap: nowrap;
-  
 }
 
 .disabled-search-button {
