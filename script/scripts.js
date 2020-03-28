@@ -1,5 +1,5 @@
-// const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
-const api_key = "gOD5XFTrM89dBlE4WuG3BoB28XPaz3jX";
+const api_key = "GxuGBQb1Yox5Ca41dSgHpDPPpIJxjaJB";
+// const api_key = "gOD5XFTrM89dBlE4WuG3BoB28XPaz3jX";
 const stylesheet = document.getElementById("stylesheet").src;
 
 preventDefaultForm("search-form");
@@ -10,7 +10,9 @@ setEventListeners();
 function setEventListeners() {
   document.getElementById("search").addEventListener("input", suggestionsKeyUp);
   document.getElementById("search-form").addEventListener("submit", () => {
-    lauchSearch(); document.getElementById("search-form").reset(); activeSearch();
+    lauchSearch();
+    document.getElementById("search-form").reset();
+    activeSearch();
   });
   suggestionsEventListener();
 }
@@ -154,7 +156,25 @@ function createQuickSearchButton(value) {
   buttonElement.classList.add("general-blue-button", "quick-search-button");
   buttonElement.innerHTML = value;
 
+  buttonElement.addEventListener("click", () => {
+    removeNode("display-results-container", "removable-title", activeSearch);
+    removeNode("display-results-container", "removable-container", () => {
+      getGifQuickButton(value);
+    });
+  });
+
   return container.appendChild(buttonElement);
+}
+
+async function getGifQuickButton(value) {
+  const url = `https://api.giphy.com/v1/gifs/search?api_key=${api_key}&q=${value}&limit=24&offset=0&rating=G&lang=es`;
+  const searchResults = await fetch(url);
+  const { data: gifs } = await searchResults.json();
+
+  saveSerachInputInSessionStorage(`${value}`);
+  makeSearchedResultsContainer(value);
+
+  gifs.forEach(displaySearchedResults);
 }
 
 function makeSearchedResultsContainer(searchInput, suggestion = " ") {
@@ -178,10 +198,12 @@ function displaySearchedResults(gifs) {
   imageElement.classList.add("trends-img");
 
   titleElement.innerHTML = gifs.title;
-  imageElement.src = gifs.images.downsized.url;
+  if (gifs.images) {
+    imageElement.src = gifs.images.downsized.url;
 
-  searchContainer.appendChild(containerElement);
-  containerElement.appendChild(imageElement);
+    searchContainer.appendChild(containerElement);
+    containerElement.appendChild(imageElement);
+  }
 }
 
 async function getRandomGifs() {}
@@ -225,11 +247,9 @@ function displayRandomResults(gifs) {
 
   buttonLink.addEventListener("click", () => {
     removeNode("display-results-container", "removable-title", console.log);
-    removeNode(
-      "display-results-container",
-      "removable-container",
-      getGifsBySearch(title.innerText)
-    );
+    removeNode("display-results-container", "removable-container", () => {
+      getGifsBySearch(title.innerText);
+    });
   });
 
   titleContainer.appendChild(title);
